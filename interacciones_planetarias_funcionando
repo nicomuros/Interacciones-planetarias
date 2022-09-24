@@ -1,0 +1,104 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+#define PI 3.14159265
+
+using namespace std;
+
+int main(){
+//VALORES FIJOS
+float x1=15, y1=15, z1=0.0, x2=15, y2=0.0, z2=0.0, vy1=0.0,vx1=1.0,vz1=0.0,vy2=0.0,vx2=0.0,vz2=0.0,m1=10,m2=1;
+float dy,a1y,a1x,a2y,a2x,d12,dt=0.01,t=0.0,dx,tfin=1000.0,G=1,e1,e1n,e2,e2n,e3,e3n;
+float dz,a1z,a2z,vz1n,vz2n,z1n,z2n;
+float vx1n,vx2n,vy1n,vy2n,x1n,y1n,x2n,y2n;
+
+    FILE *archivo;
+    FILE *inicial;
+    FILE *datos;
+inicial=fopen("datos iniciales.txt","w");
+fprintf(inicial,"x1,y1,z1,x2,y2,z2,vy1,vx1,vz1,vy2,vx2,vz2,m1,m2,g");
+fprintf(inicial,"%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f",x1,y1,z1,x2,y2,z2,vy1,vx1,vz1,vy2,vx2,vz2,m1,m2,G);
+
+archivo=fopen("datos.xyz","w");
+datos=fopen("datos.dat","w");
+fprintf(datos,"x1,y1,z1,x2,y2,z2,e1,e2,e3\n");
+//fprintf(archivo,"t , x1 , y1 , x2 , y2 , vx1 , vy1 , vx2 , vy2 , ax1 , ay1 , ax2 , ay2, e1, e2, e3\n");
+while(t<tfin)
+{
+    fprintf(archivo,"2\n");
+    fprintf(archivo,"Sol-Tierra\n");
+    fprintf(archivo,"Ac %f  %f  %f\n",x1,y1,z1);
+    fprintf(archivo,"Ac %f  %f  %f\n",x2,y2,z2);
+    fprintf(datos,"%f,%f,%f,%f,%f,%f\n",x1,y1,z1,x2,y2,z2);
+
+    dy=y2-y1;
+    dx=x2-x1;
+    dz=z2-z1;
+    d12=sqrt((dy*dy)+(dx*dx)+(dz*dz));
+    a1x=((G*m1*m2)/(d12*d12*d12))*dx;
+    a1y=((G*m1*m2)/(d12*d12*d12))*dy;
+    a1z=((G*m1*m2)/(d12*d12*d12))*dz;
+    a2x=-((G*m2*m1)/(d12*d12*d12))*dx;
+    a2y=-((G*m2*m1)/(d12*d12*d12))*dy;
+    a2z=-((G*m2*m1)/(d12*d12*d12))*dz;
+    //PROPAGACI�N//
+
+    vx1n=a1x*dt+vx1;
+    vy1n=a1y*dt+vy1;
+    vz1n=a1z*dt+vz1;
+    vx2n=a2x*dt+vx2;
+    vy2n=a2y*dt+vy2;
+    vz2n=a2z*dt+vz2;
+    x1n=vx1*dt+x1;
+    y1n=vy1*dt+y1;
+    z1n=vz1*dt+z1;
+    x2n=vx2*dt+x2;
+    y2n=vy2*dt+y2;
+    z2n=vz2*dt+z2;
+    e1n=(0.5)*m1*(vx1n*vx1n+vy1n*vy1n);
+    e2n=(0.5)*m2*(vx2n*vx2n+vy2n*vy2n);
+    e3n=G*m1*m2/d12;
+
+    vx1=vx1n;
+    vy1=vy1n;
+    vz1=vz1n;
+    vx2=vx2n;
+    vy2=vy2n;
+    vz2=vz2n;
+    x1=x1n;
+    y1=y1n;
+    z1=z1n;
+    x2=x2n;
+    y2=y2n;
+    z2=z2n;
+    t=t+dt;
+e1=e1n;
+e2=e2n;
+e3=e3n;
+
+}
+ if(!fclose(archivo))
+                            {
+                                printf("Archivo creado correctamente\n");
+                            }else
+                            {
+                                printf("ERROR\n");
+                            }
+                            if(!fclose(datos))
+                            {
+                                printf("Archivo creado correctamente\n");
+                            }else
+                            {
+                                printf("ERROR\n");
+                            }
+                            if(!fclose(inicial))
+                            {
+                                printf("Archivo creado correctamente\n");
+                            }else
+                            {
+                                printf("ERROR\n");
+                            }
+
+}
