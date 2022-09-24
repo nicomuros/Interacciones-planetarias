@@ -1,0 +1,56 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+#define PI 3.14159265
+
+using namespace std;
+
+int main(){
+//VALORES FIJOS
+float x2=1, y2=0, y1=0, x1=0, vy1=5,vx1=2,vy2=0,vx2=0,m1=1,m2=5;
+float dy,a1y,a1x,a2y,a2x,d12,dt=10,t=0,dx,tfin=100,G=1,r;
+    FILE *archivo;
+      char name[60];
+       printf("Ingrese el nombre, incluida su extencion (menos de 50 caracteres)\n");
+      scanf("%s",name);
+archivo=fopen(name,"w");
+fprintf(archivo,"t - x1 - y1 - x2 - y2 - vy1 - vx1 - vy2 - vx2 - ay1 - ax1 - ay2 - ax2\n");
+while(r!=tfin)
+{
+    //Actualizo distancias
+    dy=y2-y1;
+    dx=x2-x1;
+    d12=sqrt((dy*dy)+(dx*dx)); //Calculo vector
+    //Actualizo aceleración
+    a1x=((G*m2)/(d12*d12*d12))*dx;
+    a1y=((G*m2)/(d12*d12*d12))*dy;
+    a2x=-((G*m1)/(d12*d12*d12))*dx;
+    a2y=-((G*m1)/(d12*d12*d12))*dy;
+    //PROPAGACION//
+    vx1=a1x*dt+vx1;
+    vy1=a1y*dt+vy1;
+    vx2=a2y*dt+vx2;
+    vy2=a2y*dt+vy2;
+    x1=vx1*dt+x1;
+    y1=vy1*dt+y1;
+    x2=vx2*dt+x2;
+    y2=vy2*dt+y2;
+    //Guardo
+    fprintf(archivo,"%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f\n",t=t+dt,x1,y1,x2,y2,vy1,vx1,vy2,vx2,a1y,a1x,a2y,a2x);
+    r=r+0.1; //Avanzo
+}
+ if(!fclose(archivo))
+                            {
+                                printf("Archivo creado correctamente\n");
+                            }else
+                            {
+                                printf("ERROR\n");
+                            }
+getchar();
+getchar();
+
+
+
+}
