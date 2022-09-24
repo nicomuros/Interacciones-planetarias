@@ -1,0 +1,77 @@
+#include <iostream>
+#include <cstdlib>
+#include <stdlib.h>
+#include <math.h>
+#include <stdio.h>
+#define PI 3.14159265
+
+using namespace std;
+
+
+int main()
+{
+    int n=2;
+    int i,j;
+    float vx[n],vy[n],vz[n],x[n],y[n],z[n],m[n],fx[n],fy[n],fz[n],dx,dy,dz;
+    float rij,t,k=6.6738E-11;
+    float t_final=100;
+    float dt=0.1;
+
+    // Iniciar los valores de V y posicion
+    FILE *tablas; //No recuerdo que era esto... ¿Puede ser un archivo donde ingrese la posicion y velocidad inicial de cada planeta?
+    FILE *vmd; //Same here
+ for(t=0;t<t_final;t+=dt){
+    for(j=0;j<=n-1;j++){
+        // Parado en el planeta j calculo la fuerza debida a todos los otros
+        for(i=0;i<=n-1;i++){
+            if(i!=j){//Solo calculo si el planeta en el que estoy parado es distinto al interactuado
+                dx=x[i]-x[j];//Calculo distancias en los ejes
+                dy=y[i]-y[j];
+                dz=z[i]-z[j];
+                rij=sqrt(pow(dx,2)+pow(dy,2)+pow(dz,2));//obtengo vector
+                fx=m[i]*dx/rij;
+                fy=m[i]*dy/rij;
+                fz=m[i]*dz/rij;
+            }
+        }// termino de calcular la fza sobre j
+        fx=fx*m[j]*k;
+        fy=fy*m[j]*k;
+        fz=fz*m[j]*k;
+         //Actualizo velocidades
+        vx[j]+=dt*fx/m[j];
+        vy[j]+=dt*fy/m[j];
+        vz[j]+=dt*fz/m[j];
+         //Actualizo fuerzas
+        x[j]+=dt*vx[j];
+        y[j]+=dt*vy[j];
+        z[j]+=dt*vz[j];
+    }// paso al sgte planeta
+
+    // guardar los datos (Esto parece que está armado para dos planetas únicamente, precisa ser actualizado)
+    tablas=fopen("datos.dat","w");
+    fprintf(tablas,"x1,y1,z1,x2,y2,z2\n");
+    fprintf(tablas,"%f,%f,%f,%f,%f,%f\n",x1,y1,z1,x2,y2,z2);
+
+    vmd=fopen("datos.xyz","w");
+    fprintf(vmd,"2\n");
+    fprintf(vmd,"Sol-Tierra\n");
+    fprintf(vmd,"Ac %f  %f  %f\n",x1,y1,z1);
+    fprintf(vmd,"Ac %f  %f  %f\n",x2,y2,z2);
+}// del tiempo
+   if( !fclose(tablas) )
+      printf( "Fichero cerrado\n" );
+   else
+   {
+      printf( "Error: fichero NO CERRADO\n" );
+      return 1;
+   }
+      if( !fclose(vmd) )
+      printf( "Fichero cerrado\n" );
+   else
+   {
+      printf( "Error: fichero NO CERRADO\n" );
+      return 1;
+   }
+
+    return 0;
+}
